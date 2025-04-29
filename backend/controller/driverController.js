@@ -76,7 +76,7 @@ export const verifyDriverOtp = async (req, res) => {
     driver.otpGeneratedAt = null;
     await driver.save();
 
-    // You can issue a token here if needed
+    
     res.status(200).json({ message: 'OTP verified successfully' });
   } catch (error) {
     console.error(error);

@@ -22,7 +22,9 @@ const driverSchema = mongoose.Schema(
       default: false,
     },
     otp: String,
-  otpGeneratedAt: Date, 
+
+    otpGeneratedAt: Date, 
+    
     currentLocation: {
       type: {
         type: String,
