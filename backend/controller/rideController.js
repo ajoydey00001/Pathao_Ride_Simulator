@@ -60,10 +60,18 @@ export const requestRide = async (req, res) => {
 export const acceptRide = async (req, res) => {
   try {
     const { id } = req.params;
+    const { driverId } = req.body;
+    if (!driverId) {
+      return res.status(400).json({ message: 'Driver ID is required' });
+    }
+    if (!mongoose.Types.ObjectId.isValid(driverId)) {
+      return res.status(400).json({ message: 'Invalid Driver ID format' });
+    }
     const ride = await Ride.findById(id);
     if (!ride) return res.status(404).json({ message: 'Ride not found' });
 
     ride.status = 'accepted';
+    ride.driver = driverId; // Assign the driver to the ride
     await ride.save();
 
     res.status(200).json({ message: 'Ride accepted' });

@@ -126,7 +126,7 @@ npm test
 
 ## 🧩 System Design Diagram
 
-![System Design Diagram](Thesis_submission.png)
+![System Design Diagram](System_Diagram.png)
 
 
 
