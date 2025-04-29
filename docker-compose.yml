@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb+srv://ajoydey00001:Ajoy_Dey247@cluster0.h43x44y.mongodb.net/Pathao?retryWrites=true&w=majority&appName=Cluster0
+    volumes:
+      - .:/app
+    command: npm start
+
+volumes:
+  mongo-data:
