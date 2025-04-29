@@ -11,15 +11,7 @@ const router = express.Router();
 
 
 router.use(express.json());
-// app.get('/', (req, res) => {
-//     res.send('Hello World!');
-// });
-// router.post("/", createProduct);
 
-// router.get("/", getProducts);
-// router.put("/:id", updateProduct);
-
-// router.delete("/:id", deleteProduct);
 
 router.post("/", registerDriver);
 router.post("/login", loginDriver);

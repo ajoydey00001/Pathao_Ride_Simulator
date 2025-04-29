@@ -34,7 +34,7 @@ npm install
 
 # Create .env file
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/ride-simulator
+MONGO_URI=mongodb+srv://ajoydey00001:Ajoy_Dey247@cluster0.h43x44y.mongodb.net/Pathao?retryWrites=true&w=majority&appName=Cluster0
 
 # Run the server locally
 npm run dev

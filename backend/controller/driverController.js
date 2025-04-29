@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
-// import bcrypt from 'bcryptjs';
-// import jwt from 'jsonwebtoken';
+
 import Driver from '../models/Driver.js';
-// const Driver = require('../models/Driver');
-// const { generateOTP } = require('../util/otpService');
+
 import { generateOTP } from '../util/otpService.js';
 export const registerDriver = async (req, res) => {
   try {
