@@ -4,23 +4,25 @@ import Rider from "../models/Rider.js";
 // import jwt from "jsonwebtoken";
 
 export const registerRider = async (req, res) => {
-    try {
-      const { phone, email } = req.body;
-      if (!phone || !email) {
-        return res.status(400).json({ message: 'Phone and email are required' });
-      }
-  
-      const newRider = await Rider.create({ phone, email });
-      res.status(201).json({
-        id: newRider._id,
-        phone: newRider.phone,
-        type: 'rider'
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
+  try {
+    const { phone, email } = req.body;
+
+    if (!phone || !email) {
+      return res.status(400).json({ message: 'Phone and email are required' });
     }
+
+    const newRider = await Rider.create({ phone, email });
+    res.status(201).json({
+      id: newRider._id,
+      phone: newRider.phone,
+      type: 'rider'
+    });
+  } catch (error) {
+    console.error('Rider registration error:', error);  // ✅ Add this line
+    res.status(500).json({ message: 'Server Error' });
+  }
 };
+
 
 export const riderLogin = async (req, res) => {
     try {

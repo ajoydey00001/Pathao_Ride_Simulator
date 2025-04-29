@@ -5,12 +5,13 @@ import Driver from '../models/Driver.js';
 import { generateOTP } from '../util/otpService.js';
 export const registerDriver = async (req, res) => {
   try {
-    const { phone } = req.body;
-    if (!phone) {
-      return res.status(400).json({ message: 'Phone is required' });
+    const { phone, email } = req.body;
+
+    if (!phone || !email) {
+      return res.status(400).json({ message: 'Phone and email are required' });
     }
 
-    const newDriver = await Driver.create({ phone });
+    const newDriver = await Driver.create({ phone , email });
     res.status(201).json({
       id: newDriver._id,
       phone: newDriver.phone,
@@ -36,17 +37,53 @@ export const loginDriver = async (req, res) => {
 
     const otp = generateOTP();
     driver.otp = otp;
+    driver.otpGeneratedAt = new Date(); 
     await driver.save();
 
-    // Here you would send OTP via SMS in real life
     console.log(`Generated OTP for driver ${phone}: ${otp}`);
-
-    res.status(200).json({ message: 'OTP sent successfully' });
+    res.status(200).json({ message: `OTP sent to  ${phone}: ${otp}` });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
+export const verifyDriverOtp = async (req, res) => {
+  try {
+    const { phone, otp } = req.body;
+    if (!phone || !otp) {
+      return res.status(400).json({ message: 'Phone and OTP are required' });
+    }
+
+    const driver = await Driver.findOne({ phone });
+    if (!driver || !driver.otp || !driver.otpGeneratedAt) {
+      return res.status(404).json({ message: 'OTP not found or expired' });
+    }
+
+    const currentTime = Date.now();
+    const otpTime = new Date(driver.otpGeneratedAt).getTime();
+
+    if (currentTime - otpTime > 2 * 60 * 1000) {
+      return res.status(400).json({ message: 'OTP has expired' });
+    }
+
+    if (driver.otp !== otp) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+    // OTP is valid
+    driver.otp = null;
+    driver.otpGeneratedAt = null;
+    await driver.save();
+
+    // You can issue a token here if needed
+    res.status(200).json({ message: 'OTP verified successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 
 export const updateLocation = async (req, res) => {
     try {

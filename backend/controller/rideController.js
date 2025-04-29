@@ -1,5 +1,6 @@
 import Driver from '../models/Driver.js';
 import Ride from '../models/Ride.js';
+import Rider from '../models/Rider.js';
 import mongoose from 'mongoose';
 
 
@@ -19,6 +20,11 @@ export const requestRide = async (req, res) => {
       type: 'Point',
       coordinates: [dropoffLongitude, dropoffLatitude],
     };
+    if (!mongoose.Types.ObjectId.isValid(riderId)) {
+      return res.status(400).json({ message: 'Invalid Rider ID format' });
+    }
+    const rider = await Rider.findById(riderId);
+    if (!rider) return res.status(404).json({ message: 'only a rider can make a Pathao ride request' });
 
     // Find nearest available driver
     const nearestDriver = await Driver.findOne({

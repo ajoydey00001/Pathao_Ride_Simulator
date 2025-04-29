@@ -1,3 +1,4 @@
+import e from "express";
 import mongoose from "mongoose";
 
 const driverSchema = mongoose.Schema(
@@ -8,12 +9,8 @@ const driverSchema = mongoose.Schema(
     },
     email: {
       type: String,
-    //   required: true,
+      required: true,
       unique: true,
-    },
-    password: {
-      type: String,
-    //   required: true,
     },
     phone: {
       type: String,
@@ -24,6 +21,8 @@ const driverSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    otp: String,
+  otpGeneratedAt: Date, 
     currentLocation: {
       type: {
         type: String,
