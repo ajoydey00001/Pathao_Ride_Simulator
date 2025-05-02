@@ -5,7 +5,7 @@ A simple REST API for rider/driver onboarding, ride requests, location updates, 
 ## Base URL
 
 ```
-http://localhost:5000/api/v1
+http://localhost:5000/api/
 ```
 
 ---
@@ -17,13 +17,14 @@ http://localhost:5000/api/v1
 **Request**
 
 ```
-POST /riders
+POST "http://localhost:5000/api/riders/register"
 Content-Type: application/json
 
-{
-  "phone": "01710000001",
-  "email": "rider1@example.com"
-}
+
+  {
+    "phone": "01877555851", "email": "puja@xyz.com"
+ }
+
 ```
 
 **Response**
@@ -31,9 +32,9 @@ Content-Type: application/json
 ```json
 201 Created
 {
-  "id": "64d8a1f9b2c3f5e9a1b2c3d4",
-  "phone": "01710000001",
-  "type": "rider"
+    "id": "681509d541c97cb5e047decd",
+    "phone": "01877555851",
+    "type": "rider"
 }
 ```
 
@@ -44,14 +45,13 @@ Content-Type: application/json
 **Request**
 
 ```
-POST /riders/login-location
+POST "http://localhost:5000/api/riders/login"
 Content-Type: application/json
 
-{
-  "phone": "01710000001",
-  "longitude": 90.4125,
-  "latitude": 23.8103
-}
+{ "phone": "01877555851", 
+    "longitude" : "90.4125",
+    "latitude": "23.8103"
+ }
 ```
 
 **Response**
@@ -59,7 +59,7 @@ Content-Type: application/json
 ```json
 200 OK
 {
-  "message": "Rider login location received"
+  "message": "Rider successfully login"
 }
 ```
 
@@ -72,11 +72,12 @@ Content-Type: application/json
 **Request**
 
 ```
-POST /drivers
+POST "http://localhost:5000/api/drivers/register"
 Content-Type: application/json
 
-{
-  "phone": "01710000002"
+{ "phone": "01111111111" ,
+  "email" : "driver2@gmail.com"
+
 }
 ```
 
@@ -85,9 +86,9 @@ Content-Type: application/json
 ```json
 201 Created
 {
-  "id": "68150a6d9b66387fee60fc30",
-  "phone": "01710000002",
-  "type": "driver"
+    "id": "68150a6d9b66387fee60fc30",
+    "phone": "01111111111",
+    "type": "driver"
 }
 ```
 
@@ -98,12 +99,12 @@ Content-Type: application/json
 **Request**
 
 ```
-POST /drivers/login
+POST "http://localhost:5000/api/drivers/login"
 Content-Type: application/json
 
 {
-  "phone": "01710000002"
-}
+  "phone": "01827390358"
+ }
 ```
 
 **Response**
@@ -111,27 +112,21 @@ Content-Type: application/json
 ```json
 200 OK
 {
-  "message": "OTP sent successfully"
+  "message": "OTP sent to  01827390358 : 350848"
 }
 ```
 
-> *Note: OTP is logged to console in this demo.*
-
----
-
-### 5. Driver Send Location
+### 5. Verify OTP
 
 **Request**
 
 ```
-POST /drivers/location
+POST "http://localhost:5000/api/drivers/verifyotp"
 Content-Type: application/json
 
-{
-  "phone": "01710000002",
-  "longitude": 90.4125,
-  "latitude": 23.8103
-}
+{ "phone": "01827390358",
+    "otp" : "350848"
+ }
 ```
 
 **Response**
@@ -139,7 +134,30 @@ Content-Type: application/json
 ```json
 200 OK
 {
-  "message": "Location updated"
+    "message": "OTP verified successfully and successfully login"
+}
+```
+
+### 6. Driver continuously pings his current location in every 30 seconds
+
+**Request**
+
+```
+POST "http://localhost:5000/api/drivers/updatelocation"
+Content-Type: application/json
+
+{ "phone" : "01827390358",
+    "longitude" : "90.4125",
+    "latitude": "23.8103"
+ }
+```
+
+**Response**
+
+```json
+200 OK
+{
+    "message": "Location updated and driver is online"
 }
 ```
 
@@ -147,16 +165,16 @@ Content-Type: application/json
 
 ## 🛣️ Ride Endpoints
 
-### 6. Request Ride
+### 7. Request Ride
 
 **Request**
 
 ```
-POST /rides/request
+POST "http://localhost:5000/api/rides/request"
 Content-Type: application/json
 
 {
-  "riderId": "64d8a1f9b2c3f5e9a1b2c3d4",
+  "riderId": "681509d541c97cb5e047decd",   // The Rider's MongoDB _id
   "pickupLongitude": 90.4125,
   "pickupLatitude": 23.8103,
   "dropoffLongitude": 90.4200,
@@ -169,20 +187,25 @@ Content-Type: application/json
 ```json
 201 Created
 {
-  "message": "Ride requested",
-  "rideId": "64d8b2a4c3d5e6f7a8b9c0d1",
-  "driverId": "68150a6d9b66387fee60fc30"
+    "message": "Ride requested",
+    "rideId": "68150fe63a904afc14110abe",
+    "driverId": "68113c7a83a8f6f37dbb8d25"
 }
 ```
 
 ---
 
-### 7. Accept Ride
+### 8. Accept Ride
 
 **Request**
 
 ```
-POST /rides/{rideId}/accept
+POST "http://localhost:5000/api/rides/68150fe63a904afc14110abe/accept"
+Content-Type: application/json
+
+{
+    "driverId" : "68113c7a83a8f6f37dbb8d25"
+}
 ```
 
 **Response**
@@ -196,12 +219,12 @@ POST /rides/{rideId}/accept
 
 ---
 
-### 8. Start Ride
+### 9. Start Ride
 
 **Request**
 
 ```
-POST /rides/{rideId}/start
+POST "http://localhost:5000/api/rides/68150fe63a904afc14110abe/start"
 ```
 
 **Response**
@@ -215,12 +238,12 @@ POST /rides/{rideId}/start
 
 ---
 
-### 9. End Ride
+### 10. End Ride
 
 **Request**
 
 ```
-POST /rides/{rideId}/end
+POST "http://localhost:5000/api/rides/68150fe63a904afc14110abe/end"
 ```
 
 **Response**
@@ -234,12 +257,12 @@ POST /rides/{rideId}/end
 
 ---
 
-### 10. Cancel Ride
+### 11. Cancel Ride
 
 **Request**
 
 ```
-POST /rides/{rideId}/cancel
+POST "http://localhost:5000/api/rides/68150fe63a904afc14110abe/cancel"
 ```
 
 **Response**
@@ -253,12 +276,12 @@ POST /rides/{rideId}/cancel
 
 ---
 
-### 11. Fetch Nearby Rides
+### 12. Fetch Nearby Rides
 
 **Request**
 
 ```
-GET /rides/nearby?longitude=90.4125&latitude=23.8103
+GET "http://localhost:5000 /api/rides/nearby?longitude=90.4125&latitude=23.8103"
 ```
 
 **Response**
@@ -271,7 +294,7 @@ GET /rides/nearby?longitude=90.4125&latitude=23.8103
       "_id": "64d8b2a4c3d5e6f7a8b9c0d1",
       "pickupLocation": { "coordinates": [90.4125, 23.8103] },
       "dropoffLocation": { "coordinates": [90.4200, 23.8150] },
-      "status": "requested",
+      "status":  "requested",
       "rider": {
         "_id": "64d8a1f9b2c3f5e9a1b2c3d4",
         "phone": "01710000001",
@@ -289,7 +312,7 @@ GET /rides/nearby?longitude=90.4125&latitude=23.8103
 1. **Start MongoDB** (locally or via Docker).  
 2. `npm install`  
 3. `npm run dev` (or `docker-compose up --build`)  
-4. Test endpoints in Postman or via `curl`.  
+4. Test endpoints in Postman .  
 
 ---
 
